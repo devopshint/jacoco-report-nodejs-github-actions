@@ -30,33 +30,20 @@ jobs:
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
-   
-
-    - name: Log coverage percentages to workflow output
-      run: |
-        echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
-        echo "branches = ${{ steps.jacoco.outputs.branches }}"
-    - name: Upload JaCoCo coverage report as a workflow artifact
-      uses: actions/upload-artifact@v3
+      
+    - name: Upload Report
+      uses: 'actions/upload-artifact@v2'
       with:
-        name: jacoco-report
-        path: target/site/jacoco/
-
-
-    - name: Comment on PR with coverage percentages
-      if: ${{ github.event_name == 'pull_request' }}
-      run: |
-        REPORT=$(<badges/coverage-summary.json)
-        COVERAGE=$(jq -r '.coverage' <<< "$REPORT")%
-        BRANCHES=$(jq -r '.branches' <<< "$REPORT")%
-        NEWLINE=$'\n'
-        BODY="## JaCoCo Test Coverage Summary Statistics${NEWLINE}* __Coverage:__ ${COVERAGE}${NEWLINE}* __Branches:__ ${BRANCHES}"
-        gh pr comment ${{github.event.pull_request.number}} -b "${BODY}"
-      continue-on-error: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
+        name: report.xml
+        path: ${{ github.workspace }}/build/reports/jacoco/testCoverage/testCoverage.xml
+        token: ${{ secrets.GITHUB_TOKEN }}
+        min-coverage-overall: 40
+        min-coverage-changed-files: 60
+        
     - name: Get the Coverage info
       run: |
         echo "Total coverage ${{ steps.jacoco.outputs.coverage-overall }}"
-        echo "Changed Files coverage ${{ steps.jacoco.outputs.coverage-changed-files }}"
+        echo "Changed Files coverage ${{ steps.jacoco.outputs.coverage-changed-files }}"     
+   
+
+ 
