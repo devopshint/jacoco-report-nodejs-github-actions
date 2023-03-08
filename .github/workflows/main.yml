@@ -32,9 +32,9 @@ jobs:
       uses: codecov/codecov-action@v1
       
 
-test:
-  runs-on: ubuntu-latest
-  steps:
+  test:
+    runs-on: ubuntu-latest
+    steps:
     
       # generates coverage-report.md and publishes as checkrun
     - name: JaCoCo Code Coverage Report
